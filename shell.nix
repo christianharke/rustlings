@@ -1,19 +1,23 @@
 let
 
   moz_overlay = import (builtins.fetchTarball https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz);
-  nixpkgs = import <nixpkgs> {
+  sources = import ./nix/sources.nix;
+  pkgs = import sources.nixpkgs {
     overlays = [ moz_overlay ];
   };
 
 in
 
-nixpkgs.mkShell {
+with pkgs;
+
+mkShell {
 
   name = "rustlings";
 
-  buildInputs = with nixpkgs; [
+  buildInputs = [
     figlet lolcat # banner printing on enter
 
+    niv
     latest.rustChannels.nightly.rust
     latest.rustChannels.nightly.rust-src
     rustup
